@@ -1,8 +1,9 @@
-import React from 'react'
-import { AppRouter } from '../../router'
+import { NavBar } from '../';
 
 export const CalendarPage = () => {
   return (
-    <h1>CalendarPage</h1>
+    <>
+      <NavBar />
+    </>
   )
 }
