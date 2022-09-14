@@ -1,13 +1,16 @@
-import { useState } from 'react';
-import Modal from 'react-modal';
-import DatePicker, { registerLocale } from "react-datepicker";
+import { useMemo, useEffect, useState  } from 'react';
 import { addHours, differenceInSeconds } from 'date-fns';
-import es from 'date-fns/locale/es';
-import "react-datepicker/dist/react-datepicker.css";
+
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
-import { useMemo } from 'react';
-import { useUiStore } from '../../hooks';
+
+import Modal from 'react-modal';
+
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import es from 'date-fns/locale/es';
+import { useUiStore, useCalendarStore } from '../../hooks';
 
 registerLocale('es', es)
 
@@ -26,13 +29,14 @@ Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
+    const { activeEvent } = useCalendarStore();
     const { isDateModalOpen, closeDateModal } = useUiStore();
     //const [isOpen, setIsOpen] = useState(true);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [ formValues, setFormValues ] = useState({
-        title: 'Felipe',
-        notes: 'Hernandez',
+        title: '',
+        notes: '',
         start: new Date(),
         end: addHours( new Date(), 2),
     })
@@ -41,6 +45,14 @@ export const CalendarModal = () => {
         if( !formSubmitted) return ''; // Pregunta si el formulario ya se envio 
         return ( formValues.title.length > 0)? 'is-valid' : 'is-invalid'  // Pregunta si hay titulo
     }, [formValues.title, formSubmitted])
+
+    useEffect(() => {
+      if(activeEvent !== null){
+        setFormValues({...activeEvent})
+      }
+    }, [activeEvent])
+    
+
 
     const onInpuntChange = ({ target }) =>{
         setFormValues({
